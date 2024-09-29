@@ -70,7 +70,7 @@
         }
 
         input[type="number"] {
-            width: 100%;
+            width: 90%; /* Reduced from 100% to 90% */
             padding: 12px 16px;
             border: 1px solid var(--md-sys-color-outline);
             border-radius: 4px;
@@ -144,7 +144,7 @@
         </div>
         <div class="input-group">
             <label for="years">Investment Period (Years)</label>
-            <input type="number" id="years" min="1" max="150" step="1" value="10">
+            <input type="number" id="years" min="1" max="50" step="1" value="10">
         </div>
         <button onclick="calculate()">Calculate</button>
         <div id="result"></div>
@@ -171,17 +171,21 @@
                 </div>
                 <div class="result-item">
                     <span><span class="material-icons">account_balance</span>Future Value:</span>
-                    <strong>$${futureValue.toFixed(2)}</strong>
+                    <strong>$${formatNumber(futureValue)}</strong>
                 </div>
                 <div class="result-item">
                     <span><span class="material-icons">savings</span>Total Contributions:</span>
-                    <strong>$${totalContributions.toFixed(2)}</strong>
+                    <strong>$${formatNumber(totalContributions)}</strong>
                 </div>
                 <div class="result-item">
                     <span><span class="material-icons">trending_up</span>Interest Earned:</span>
-                    <strong>$${interestEarned.toFixed(2)}</strong>
+                    <strong>$${formatNumber(interestEarned)}</strong>
                 </div>
             `;
+        }
+
+        function formatNumber(num) {
+            return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }
     </script>
 </body>
