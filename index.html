@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinMango Compound Interest Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --md-sys-color-primary: #FF5722;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #FFDBD0;
+            --md-sys-color-on-primary-container: #3F1400;
+            --md-sys-color-secondary: #77574E;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #FFDBD0;
+            --md-sys-color-on-secondary-container: #2C150E;
+            --md-sys-color-tertiary: #695E2F;
+            --md-sys-color-on-tertiary: #FFFFFF;
+            --md-sys-color-tertiary-container: #F2E2A7;
+            --md-sys-color-on-tertiary-container: #221B00;
+            --md-sys-color-error: #BA1A1A;
+            --md-sys-color-on-error: #FFFFFF;
+            --md-sys-color-error-container: #FFDAD6;
+            --md-sys-color-on-error-container: #410002;
+            --md-sys-color-background: #FFFBFF;
+            --md-sys-color-on-background: #201A18;
+            --md-sys-color-surface: #FFFBFF;
+            --md-sys-color-on-surface: #201A18;
+            --md-sys-color-outline: #85736D;
+            --md-sys-color-surface-variant: #F5DED6;
+            --md-sys-color-on-surface-variant: #53433E;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.5;
+            color: var(--md-sys-color-on-background);
+            background-color: var(--md-sys-color-background);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--md-sys-color-on-surface);
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--md-sys-color-on-surface);
+            font-size: 14px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px 24px;
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #FF7043;
+        }
+
+        #result {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .material-icons {
+            font-size: 20px;
+            margin-right: 8px;
+            vertical-align: middle;
+            color: var(--md-sys-color-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1><span class="material-icons">calculate</span> FinMango Compound Interest Calculator</h1>
+        <div class="input-group">
+            <label for="initial">Initial Investment ($)</label>
+            <input type="number" id="initial" min="0" step="100" value="1000">
+        </div>
+        <div class="input-group">
+            <label for="monthly">Monthly Contribution ($)</label>
+            <input type="number" id="monthly" min="0" step="10" value="100">
+        </div>
+        <div class="input-group">
+            <label for="rate">Annual Interest Rate (%)</label>
+            <input type="number" id="rate" min="0" max="20" step="0.1" value="7">
+        </div>
+        <div class="input-group">
+            <label for="years">Investment Period (Years)</label>
+            <input type="number" id="years" min="1" max="50" step="1" value="10">
+        </div>
+        <button onclick="calculate()">Calculate</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            const initial = parseFloat(document.getElementById('initial').value);
+            const monthly = parseFloat(document.getElementById('monthly').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100 / 12;
+            const years = parseInt(document.getElementById('years').value);
+            const n = years * 12;
+
+            const futureValue = initial * Math.pow(1 + rate, n) + 
+                                monthly * (Math.pow(1 + rate, n) - 1) / rate;
+
+            const totalContributions = initial + (monthly * n);
+            const interestEarned = futureValue - totalContributions;
+
+            document.getElementById('result').innerHTML = `
+                <div class="result-item">
+                    <span><span class="material-icons">schedule</span>Time Period:</span>
+                    <strong>${years} years</strong>
+                </div>
+                <div class="result-item">
+                    <span><span class="material-icons">account_balance</span>Future Value:</span>
+                    <strong>$${futureValue.toFixed(2)}</strong>
+                </div>
+                <div class="result-item">
+                    <span><span class="material-icons">savings</span>Total Contributions:</span>
+                    <strong>$${totalContributions.toFixed(2)}</strong>
+                </div>
+                <div class="result-item">
+                    <span><span class="material-icons">trending_up</span>Interest Earned:</span>
+                    <strong>$${interestEarned.toFixed(2)}</strong>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
